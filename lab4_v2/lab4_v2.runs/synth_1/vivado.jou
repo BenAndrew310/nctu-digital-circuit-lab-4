@@ -1,12 +1,12 @@
 #-----------------------------------------------------------
-# Vivado v2018.2 (64-bit)
-# SW Build 2258646 on Thu Jun 14 20:03:12 MDT 2018
-# IP Build 2256618 on Thu Jun 14 22:10:49 MDT 2018
-# Start of session at: Mon Oct  7 16:08:01 2019
-# Process ID: 6520
-# Current directory: C:/Users/shlab58/Desktop/lab4_v2/lab4_v2.runs/synth_1
+# Vivado v2020.1 (64-bit)
+# SW Build 2902540 on Wed May 27 19:54:49 MDT 2020
+# IP Build 2902112 on Wed May 27 22:43:36 MDT 2020
+# Start of session at: Mon Oct 12 17:32:08 2020
+# Process ID: 1516
+# Current directory: C:/Users/Shlab24/Desktop/nctu-digital-circuit-lab-4/lab4_v2/lab4_v2.runs/synth_1
 # Command line: vivado.exe -log lab4.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source lab4.tcl
-# Log file: C:/Users/shlab58/Desktop/lab4_v2/lab4_v2.runs/synth_1/lab4.vds
-# Journal file: C:/Users/shlab58/Desktop/lab4_v2/lab4_v2.runs/synth_1\vivado.jou
+# Log file: C:/Users/Shlab24/Desktop/nctu-digital-circuit-lab-4/lab4_v2/lab4_v2.runs/synth_1/lab4.vds
+# Journal file: C:/Users/Shlab24/Desktop/nctu-digital-circuit-lab-4/lab4_v2/lab4_v2.runs/synth_1\vivado.jou
 #-----------------------------------------------------------
 source lab4.tcl -notrace

@@ -6,8 +6,9 @@ module lab4(
   output [3:0] usr_led   // Four yellow LEDs
 );
 
-reg [4-1:0] debounced;
-reg pwm_signal;
+reg [4-1:0] counter = 0;
+wire [4-1:0] debounced;
+wire pwm_signal;
 
 pwm PWM(.clk(clk),
         .btn_increase(debounced[2]),
@@ -15,16 +16,30 @@ pwm PWM(.clk(clk),
         .pwm_signal(pwm_signal));
         
 debounce DBC(.clk(clk),
-             .pwm(pwm_signal),
+//             .pwm(pwm_signal),
+             //.reset(reset_n),
              .usr_btn(usr_btn),
              .debounced(debounced));
             
-assign usr_led = debounced;
+assign usr_led = counter;
+
+always @ (posedge clk) begin
+    if (!reset_n) counter <= 0;
+    else if (debounced[0]) begin
+        counter <= counter-1;
+        if (counter<-8) counter <= -8;
+    end
+    else if (debounced[1]) begin
+        counter <= counter+1;
+        if (counter>7) counter <= 7;
+    end
+end
 
 endmodule
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 module pwm(
     input clk,
+//    input reset,
     input btn_increase,
     input btn_decrease,
     output reg pwm_signal
@@ -38,7 +53,7 @@ integer duty_index = 2;
 reg [8-1:0] pwm_counter = 0;
 
 always @ (posedge clk) begin
-    if (pwm_counter < duty_cycle[duty_index +: 8]) begin
+    if (pwm_counter < duty_cycle[(duty_index*8) +: 8]) begin
         pwm_counter <= pwm_counter + 1;
         pwm_signal <= 1;
     end
@@ -60,28 +75,30 @@ always @ (posedge clk) begin
 end
 
 endmodule
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 module debounce(
     input clk,
-    input pwm,
+//    input pwm,
     input [4-1:0] usr_btn,
     output reg [4-1:0] debounced
  );
+   
+ reg [3:0] timer = 4'b1111;
+ 
+ always @ (posedge clk) begin //usr_btn[0], usr_btn[1], usr_btn[2], usr_btn[3]) begin
     
- reg timer;
- initial timer = {(4){1'b1}};
+// end
  
- always @ (posedge clk) begin
-    timer <= timer - 1'b1;
- end
- 
- always @ (posedge clk, posedge pwm) begin
+// always @ (posedge clk) begin
     if (timer == 0) begin
         debounced[0] <= usr_btn[0];
         debounced[1] <= usr_btn[1];
         debounced[2] <= usr_btn[2];
         debounced[3] <= usr_btn[3];
+        timer <= 4'b1111;
     end
+    else 
+        timer <= timer - 1;
  end 
 
 endmodule
