@@ -15,23 +15,64 @@ pwm PWM(.clk(clk),
         .btn_decrease(debounced[3]),
         .pwm_signal(pwm_signal));
         
-debounce DBC(.clk(clk),
-//             .pwm(pwm_signal),
-             //.reset(reset_n),
-             .usr_btn(usr_btn),
-             .debounced(debounced));
+//debounce DBC(.clk(clk),
+////             .pwm(pwm_signal),
+//             //.reset(reset_n),
+//             .usr_btn(usr_btn),
+//             .debounced(debounced));
+             
+debounce_btn0 DEB0(.clk(clk), .btn0(usr_btn[0]), .deb0(debounced[0]));
+debounce_btn1 DEB1(.clk(clk), .btn1(usr_btn[1]), .deb1(debounced[1]));
+debounce_btn2 DEB2(.clk(clk), .btn2(usr_btn[2]), .deb2(debounced[2]));
+debounce_btn3 DEB3(.clk(clk), .btn3(usr_btn[3]), .deb3(debounced[3]));
             
 assign usr_led = counter;
 
 always @ (posedge clk) begin
     if (!reset_n) counter <= 0;
     else if (debounced[0]) begin
-        counter <= counter-1;
-        if (counter<-8) counter <= -8;
+//        counter <= 4'b1010;
+        case (counter)
+            4'b0111: counter = 4'b0110;
+            4'b0110: counter = 4'b0101;
+            4'b0101: counter = 4'b0100;
+            4'b0100: counter = 4'b0011;
+            4'b0011: counter = 4'b0010;
+            4'b0010: counter = 4'b0001;
+            4'b0001: counter = 4'b0000;
+            4'b0000: counter = 4'b1111;
+            4'b1111: counter = 4'b1110;
+            4'b1110: counter = 4'b1101;
+            4'b1101: counter = 4'b1100;
+            4'b1100: counter = 4'b1011;
+            4'b1011: counter = 4'b1010;
+            4'b1010: counter = 4'b1001;
+            4'b1001: counter = 4'b1000;
+            4'b1000: counter = 4'b1000;
+            default: counter = 4'b0000; 
+        endcase
     end
     else if (debounced[1]) begin
-        counter <= counter+1;
-        if (counter>7) counter <= 7;
+//        counter <= 4'b0011;
+        case (counter)
+            4'b0111: counter = 4'b0111;
+            4'b0110: counter = 4'b0111;
+            4'b0101: counter = 4'b0110;
+            4'b0100: counter = 4'b0101;
+            4'b0011: counter = 4'b0100;
+            4'b0010: counter = 4'b0011;
+            4'b0001: counter = 4'b0010;
+            4'b0000: counter = 4'b0001;
+            4'b1111: counter = 4'b0000;
+            4'b1110: counter = 4'b1111;
+            4'b1101: counter = 4'b1110;
+            4'b1100: counter = 4'b1101;
+            4'b1011: counter = 4'b1100;
+            4'b1010: counter = 4'b1011;
+            4'b1001: counter = 4'b1010;
+            4'b1000: counter = 4'b1001;
+            default: counter = 4'b0000; 
+        endcase
     end
 end
 
@@ -83,7 +124,7 @@ module debounce(
     output reg [4-1:0] debounced
  );
    
- reg [3:0] timer = 4'b1111;
+ reg [3:0] timer = 3'b111;
  
  always @ (posedge clk) begin //usr_btn[0], usr_btn[1], usr_btn[2], usr_btn[3]) begin
     
@@ -95,10 +136,118 @@ module debounce(
         debounced[1] <= usr_btn[1];
         debounced[2] <= usr_btn[2];
         debounced[3] <= usr_btn[3];
-        timer <= 4'b1111;
+        timer <= 3'b111;
     end
-    else 
-        timer <= timer - 1;
+    else begin
+        if (usr_btn[0] | usr_btn[1] | usr_btn[2] | usr_btn[3])
+            timer <= timer - 1;
+        else if (!usr_btn[0] & !usr_btn[1] & !usr_btn[2] & !usr_btn[3]) timer <= 3'b111;
+    end
  end 
+
+endmodule
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+module debounce_btn0(
+    input clk,
+    input btn0,
+    output reg deb0);
+
+reg [3:0] timer = 3'b111;
+ 
+ always @ (posedge clk) begin
+    if (timer == 0) begin
+        deb0 = 1;
+        timer = 3'b111;
+        deb0 = 0;
+    end
+    else begin
+        if (btn0) begin 
+            timer <= timer - 1;
+            deb0 <= 0;
+        end
+        else begin
+            timer <= 3'b111;
+            deb0 <= 0;
+        end
+    end
+ end    
+
+endmodule
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+module debounce_btn1(
+    input clk,
+    input btn1,
+    output reg deb1);
+
+reg [3:0] timer = 3'b111;
+ 
+ always @ (posedge clk) begin
+    if (timer == 0) begin
+        deb1 <= btn1;
+        timer <= 3'b111;
+    end
+    else begin
+        if (btn1) begin 
+            timer <= timer - 1;
+            deb1 <= 0;
+        end
+        else begin
+            timer <= 3'b111;
+            deb1 <= 0;
+        end
+    end
+ end    
+
+endmodule
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+module debounce_btn2(
+    input clk,
+    input btn2,
+    output reg deb2);
+
+reg [3:0] timer = 3'b111;
+ 
+ always @ (posedge clk) begin
+    if (timer == 0) begin
+        deb2 <= btn2;
+        timer <= 3'b111;
+    end
+    else begin
+        if (btn2) begin 
+            timer <= timer - 1;
+            deb2 <= 0;
+        end
+        else begin
+            timer <= 3'b111;
+            deb2 <= 0;
+        end
+    end
+ end    
+
+endmodule
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+module debounce_btn3(
+    input clk,
+    input btn3,
+    output reg deb3);
+
+reg [3:0] timer = 3'b111;
+ 
+ always @ (posedge clk) begin
+    if (timer == 0) begin
+        deb3 <= btn3;
+        timer <= 3'b111;
+    end
+    else begin
+        if (btn3) begin 
+            timer <= timer - 1;
+            deb3 <= 0;
+        end
+        else begin
+            timer <= 3'b111;
+            deb3 <= 0;
+        end
+    end
+ end    
 
 endmodule
