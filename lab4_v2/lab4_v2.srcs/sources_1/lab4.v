@@ -10,10 +10,10 @@ reg [4-1:0] counter = 0;
 wire [4-1:0] debounced;
 wire pwm_signal;
             
-debounce_btn1 DEB0(.clk(clk), .btn1(usr_btn[0]), .deb1(debounced[0]));
-debounce_btn1 DEB1(.clk(clk), .btn1(usr_btn[1]), .deb1(debounced[1]));
-debounce_btn1 DEB2(.clk(clk), .btn1(usr_btn[2]), .deb1(debounced[2]));
-debounce_btn1 DEB3(.clk(clk), .btn1(usr_btn[3]), .deb1(debounced[3]));
+debounce_btn DEB0(.clk(clk), .btn(usr_btn[0]), .deb(debounced[0]));
+debounce_btn DEB1(.clk(clk), .btn(usr_btn[1]), .deb(debounced[1]));
+debounce_btn DEB2(.clk(clk), .btn(usr_btn[2]), .deb(debounced[2]));
+debounce_btn DEB3(.clk(clk), .btn(usr_btn[3]), .deb(debounced[3]));
 
 pwm PWM(.clk(clk),
         .btn_increase(debounced[2]),
@@ -111,26 +111,26 @@ end
 
 endmodule
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-module debounce_btn1(
+module debounce_btn(
     input clk,
-    input btn1,
-    output reg deb1);
+    input btn,
+    output reg deb);
 
 reg [23-1:0] timer = {23{1'b1}};
  
  always @ (posedge clk) begin
     if (timer == 0) begin
-        deb1 <= btn1;
+        deb <= btn;
         timer <= {23{1'b1}};
     end
     else begin
-        if (btn1) begin 
+        if (btn) begin 
             timer <= timer - 1;
-            deb1 <= 0;
+            deb <= 0;
         end
         else begin
             timer <= {23{1'b1}};
-            deb1 <= 0;
+            deb <= 0;
         end
     end
  end    
